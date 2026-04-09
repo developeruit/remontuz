@@ -99,17 +99,6 @@ export const api = {
     return data || [];
   },
 
-  async calculate(service_id, area_sqm) {
-    const { data, error } = await supabase.from("services").select("*").eq("id", service_id).single();
-    throwIf(error);
-    return {
-      service_id,
-      area_sqm,
-      price_per_sqm: data.base_price_per_sqm,
-      total: data.base_price_per_sqm * area_sqm,
-    };
-  },
-
   // ============ MASTERS ============
   async masters() {
     const { data, error } = await supabase
@@ -306,47 +295,6 @@ export const api = {
       .eq("id", id);
     throwIf(error);
     return { ok: true };
-  },
-
-  // ============ MESSAGES (CHAT) ============
-  async getMessages(order_id) {
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("order_id", order_id)
-      .order("created_at", { ascending: true });
-    throwIf(error);
-    return data || [];
-  },
-
-  async sendMessage(order_id, content) {
-    const uid = await currentUserId();
-    if (!uid) throw new Error("Avval tizimga kiring");
-    const { data, error } = await supabase
-      .from("messages")
-      .insert({ order_id, sender_id: uid, content })
-      .select()
-      .single();
-    throwIf(error);
-    return data;
-  },
-
-  subscribeToMessages(order_id, onMessage) {
-    const channel = supabase
-      .channel(`messages:order_${order_id}`)
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages", filter: `order_id=eq.${order_id}` },
-        (payload) => onMessage(payload.new)
-      )
-      .subscribe();
-    return () => supabase.removeChannel(channel);
-  },
-
-  async getOrder(id) {
-    const { data, error } = await supabase.from("orders").select("*").eq("id", id).single();
-    throwIf(error);
-    return data;
   },
 
   // ============ REVIEWS ============

@@ -30,7 +30,6 @@ export default function MasterDashboard() {
   const [beforeFile, setBeforeFile] = useState(null);
   const [afterFile, setAfterFile] = useState(null);
   const [uploading, setUploading] = useState(false);
-  const [msg, setMsg] = useState("");
 
   const load = async () => {
     setLoading(true);

@@ -31,7 +31,6 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState("overview");
   const [search, setSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState("all");
-  const [msg, setMsg] = useState("");
   const [loading, setLoading] = useState(true);
 
   const load = async () => {

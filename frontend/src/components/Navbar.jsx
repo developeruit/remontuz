@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const IconHome = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
@@ -11,6 +12,13 @@ const IconUser = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="4"/>
     <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+  </svg>
+);
+const IconCart = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="9" cy="21" r="1.5"/>
+    <circle cx="18" cy="21" r="1.5"/>
+    <path d="M1 1h4l2.7 13.4a2 2 0 0 0 2 1.6h9.7a2 2 0 0 0 2-1.6L23 6H6"/>
   </svg>
 );
 const IconMenu = ({ open }) => (
@@ -41,6 +49,7 @@ const navItems = [
 
 export default function Navbar() {
   const { user } = useAuth();
+  const { count: cartCount } = useCart();
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -106,6 +115,40 @@ export default function Navbar() {
       </div>
 
       <div className="nav-auth" style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
+        {/* Cart icon */}
+        <Link to="/cart" style={{
+          position: "relative",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          width: 42, height: 42,
+          borderRadius: 12,
+          background: "rgba(255,255,255,0.6)",
+          border: "1px solid rgba(100,116,139,0.2)",
+          color: "#475569",
+          textDecoration: "none",
+          transition: "all 0.2s",
+        }}>
+          <IconCart />
+          {cartCount > 0 && (
+            <span style={{
+              position: "absolute",
+              top: -4, right: -4,
+              minWidth: 18, height: 18,
+              borderRadius: 10,
+              background: "#fb923c",
+              color: "#7c2d12",
+              fontSize: 10,
+              fontWeight: 700,
+              display: "grid",
+              placeItems: "center",
+              padding: "0 5px",
+              border: "2px solid #fff",
+              fontFamily: "'Space Grotesk', sans-serif",
+            }}>{cartCount > 99 ? "99+" : cartCount}</span>
+          )}
+        </Link>
+
         {user ? (
           <>
             <Link to={dashPath} className="btn btn-ghost hide-mobile" style={{

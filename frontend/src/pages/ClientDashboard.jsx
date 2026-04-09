@@ -19,20 +19,31 @@ const STATUS = {
 
 const fmt = (n) => Number(n || 0).toLocaleString("uz-UZ");
 
+const MAT_STATUS = {
+  pending:   { label: "Kutilmoqda",   color: "#3b82f6", bg: "rgba(59,130,246,0.12)" },
+  confirmed: { label: "Tasdiqlangan", color: "#f59e0b", bg: "rgba(245,158,11,0.12)" },
+  delivered: { label: "Yetkazildi",   color: "#10b981", bg: "rgba(16,185,129,0.12)" },
+  cancelled: { label: "Bekor qilindi", color: "#94a3b8", bg: "rgba(148,163,184,0.12)" },
+};
+
 export default function ClientDashboard() {
   const { user } = useAuth();
   const toast = useToast();
   const [orders, setOrders] = useState([]);
+  const [materialOrders, setMaterialOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState("all");
   const [reviewFor, setReviewFor] = useState(null);
   const ordersRef = useRef([]);
 
   const load = () => {
-    return api.orders().then(d => {
-      setOrders(d || []);
-      ordersRef.current = d || [];
-    });
+    return Promise.all([
+      api.orders().then(d => {
+        setOrders(d || []);
+        ordersRef.current = d || [];
+      }),
+      api.myMaterialOrders().then(d => setMaterialOrders(d || [])).catch(() => {}),
+    ]);
   };
 
   useEffect(() => {
@@ -113,11 +124,75 @@ export default function ClientDashboard() {
           { id: "all",       label: "Barchasi",    count: stats.total },
           { id: "active",    label: "Faol",        count: stats.active },
           { id: "completed", label: "Tugallangan", count: stats.completed },
+          { id: "materials", label: "🛒 Materiallar", count: materialOrders.length },
         ]}
       />
 
-      {/* ORDERS LIST */}
-      {loading ? (
+      {/* MATERIAL ORDERS */}
+      {tab === "materials" ? (
+        loading ? (
+          <GlassCard style={{ padding: 40, textAlign: "center", color: "#94a3b8" }}>Yuklanmoqda...</GlassCard>
+        ) : materialOrders.length === 0 ? (
+          <GlassCard style={{ padding: 48, textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 12 }}>🛒</div>
+            <h3 style={{ fontSize: 18, marginBottom: 8 }}>Material buyurtmalar yo'q</h3>
+            <p style={{ fontSize: 14, color: "#94a3b8", marginBottom: 20 }}>
+              Materiallar bozoridan onlayn buyurtma bering
+            </p>
+            <Link to="/materials" className="btn btn-accent">Materiallarni ko'rish →</Link>
+          </GlassCard>
+        ) : (
+          <div style={{ display: "grid", gap: 14 }}>
+            {materialOrders.map(mo => {
+              const s = MAT_STATUS[mo.status] || MAT_STATUS.pending;
+              const itemsList = Array.isArray(mo.items) ? mo.items : [];
+              return (
+                <GlassCard key={mo.id} style={{ padding: 22 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 14, marginBottom: 14, flexWrap: "wrap" }}>
+                    <div>
+                      <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                        <h3 style={{ fontSize: 16, fontWeight: 600, margin: 0 }}>Buyurtma #{mo.id}</h3>
+                        <span style={{
+                          padding: "3px 10px", borderRadius: 50,
+                          background: s.bg, color: s.color,
+                          fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: 0.5,
+                        }}>{s.label}</span>
+                      </div>
+                      <div style={{ fontSize: 12, color: "#94a3b8", marginTop: 4 }}>
+                        📅 {new Date(mo.created_at).toLocaleDateString("uz-UZ")} · 📍 {mo.address}
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <div style={{ fontSize: 11, color: "#94a3b8", fontWeight: 500 }}>Jami</div>
+                      <div style={{ fontSize: 22, fontWeight: 700, color: "#7c2d12", fontFamily: "'Space Grotesk', sans-serif" }}>
+                        {fmt(mo.total_price)} <span style={{ fontSize: 11, fontWeight: 400, color: "#94a3b8" }}>so'm</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div style={{
+                    borderTop: "1px dashed rgba(0,0,0,0.08)",
+                    paddingTop: 12,
+                    display: "grid",
+                    gap: 6,
+                  }}>
+                    {itemsList.map((it, idx) => (
+                      <div key={idx} style={{ display: "flex", justifyContent: "space-between", fontSize: 13 }}>
+                        <span style={{ color: "#475569" }}>
+                          {it.name} <span style={{ color: "#94a3b8" }}>× {it.qty} {it.unit}</span>
+                        </span>
+                        <span style={{ fontWeight: 600, color: "#0f172a" }}>
+                          {fmt(it.price * it.qty)} so'm
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </GlassCard>
+              );
+            })}
+          </div>
+        )
+      ) : /* ORDERS LIST */
+      loading ? (
         <GlassCard style={{ padding: 40, textAlign: "center", color: "#94a3b8" }}>Yuklanmoqda...</GlassCard>
       ) : filtered.length === 0 ? (
         <GlassCard style={{ padding: 48, textAlign: "center" }}>

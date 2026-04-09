@@ -274,6 +274,40 @@ export const api = {
     return data || [];
   },
 
+  // ============ MATERIAL ORDERS (cart) ============
+  async createMaterialOrder(payload) {
+    const uid = await currentUserId();
+    if (!uid) throw new Error("Avval tizimga kiring");
+    const { data, error } = await supabase
+      .from("material_orders")
+      .insert({ ...payload, client_id: uid })
+      .select()
+      .single();
+    throwIf(error);
+    return data;
+  },
+
+  async myMaterialOrders() {
+    const uid = await currentUserId();
+    if (!uid) return [];
+    const { data, error } = await supabase
+      .from("material_orders")
+      .select("*")
+      .eq("client_id", uid)
+      .order("created_at", { ascending: false });
+    throwIf(error);
+    return data || [];
+  },
+
+  async cancelMaterialOrder(id) {
+    const { error } = await supabase
+      .from("material_orders")
+      .update({ status: "cancelled" })
+      .eq("id", id);
+    throwIf(error);
+    return { ok: true };
+  },
+
   // ============ MESSAGES (CHAT) ============
   async getMessages(order_id) {
     const { data, error } = await supabase

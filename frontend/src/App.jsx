@@ -15,6 +15,7 @@ import ClientDashboard from "./pages/ClientDashboard";
 import MasterDashboard from "./pages/MasterDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import Profile from "./pages/Profile";
+import Cart from "./pages/Cart";
 import { useAuth } from "./context/AuthContext";
 
 function Protected({ role, children }) {
@@ -40,6 +41,7 @@ export default function App() {
           <Route path="/portfolio" element={<Portfolio />} />
           <Route path="/materials" element={<Materials />} />
           <Route path="/calculator" element={<Calculator />} />
+          <Route path="/cart" element={<Cart />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/apply" element={<Protected><Apply /></Protected>} />

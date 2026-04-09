@@ -60,10 +60,10 @@ export default function Home() {
 
       <section className="container grid-2" style={{
         position: "relative",
-        padding: "48px 48px 32px",
+        padding: "48px 24px 32px",
         display: "grid",
         gridTemplateColumns: "1fr 1fr",
-        gap: 48,
+        gap: "clamp(28px, 4vw, 48px)",
         alignItems: "center",
         opacity: mounted ? 1 : 0,
         transform: mounted ? "translateY(0)" : "translateY(30px)",
@@ -81,7 +81,7 @@ export default function Home() {
           </div>
 
           <h1 style={{
-            fontSize: 56, fontWeight: 700, lineHeight: 1.08, color: "#0f172a",
+            fontSize: "clamp(34px, 5vw, 56px)", fontWeight: 700, lineHeight: 1.08, color: "#0f172a",
             letterSpacing: -2, margin: "0 0 20px",
             fontFamily: "'Space Grotesk', sans-serif",
           }}>
@@ -157,7 +157,7 @@ export default function Home() {
       {/* STATS — same hero.png background continues */}
       <section className="container grid-4" style={{
         position: "relative",
-        padding: "24px 48px 80px",
+        padding: "24px 24px 80px",
         display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 16,
       }}>
         {stats.map((s, i) => (

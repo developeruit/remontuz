@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
@@ -10,6 +11,22 @@ const IconUser = () => (
   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
     <circle cx="12" cy="8" r="4"/>
     <path d="M4 21c0-4.4 3.6-8 8-8s8 3.6 8 8"/>
+  </svg>
+);
+const IconMenu = ({ open }) => (
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round">
+    {open ? (
+      <>
+        <line x1="18" y1="6" x2="6" y2="18"/>
+        <line x1="6" y1="6" x2="18" y2="18"/>
+      </>
+    ) : (
+      <>
+        <line x1="3" y1="6" x2="21" y2="6"/>
+        <line x1="3" y1="12" x2="21" y2="12"/>
+        <line x1="3" y1="18" x2="21" y2="18"/>
+      </>
+    )}
   </svg>
 );
 
@@ -25,25 +42,27 @@ const navItems = [
 export default function Navbar() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [open, setOpen] = useState(false);
 
   const dashPath =
     user?.role === "admin" ? "/admin"
     : user?.role === "master" ? "/master"
     : "/client";
 
+  const closeMenu = () => setOpen(false);
+
   return (
     <nav style={{
       position: "sticky", top: 0, zIndex: 100,
       display: "flex", alignItems: "center", justifyContent: "space-between",
-      padding: "16px 48px",
-      background: "rgba(255,255,255,0.45)",
+      padding: "14px clamp(16px, 4vw, 48px)",
+      background: "rgba(255,255,255,0.55)",
       backdropFilter: "blur(20px)",
       WebkitBackdropFilter: "blur(20px)",
       borderBottom: "1px solid rgba(255,255,255,0.5)",
-      flexWrap: "wrap",
       gap: 12,
     }}>
-      <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <Link to="/" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
         <div style={{
           width: 36, height: 36, borderRadius: 10,
           background: "linear-gradient(135deg, #fb923c, #f97316)",
@@ -56,27 +75,29 @@ export default function Navbar() {
         </span>
       </Link>
 
-      <div style={{
+      <div className="nav-center" style={{
         display: "flex", gap: 4,
         background: "rgba(255,255,255,0.5)",
         borderRadius: 50, padding: 4,
         border: "1px solid rgba(255,255,255,0.6)",
-        flexWrap: "wrap",
       }}>
         {navItems.map(item => (
           <NavLink
             key={item.to}
             to={item.to}
             end={item.to === "/"}
+            onClick={closeMenu}
             style={({ isActive }) => ({
-              padding: "8px 18px",
+              padding: "8px 16px",
               borderRadius: 50,
-              fontSize: 13.5,
+              fontSize: 13,
               fontWeight: 500,
               transition: "all 0.25s ease",
               background: isActive ? "#fb923c" : "transparent",
               color: isActive ? "#7c2d12" : "#64748b",
               boxShadow: isActive ? "0 2px 8px rgba(251,146,60,0.3)" : "none",
+              whiteSpace: "nowrap",
+              textAlign: "center",
             })}
           >
             {item.label}
@@ -84,10 +105,10 @@ export default function Navbar() {
         ))}
       </div>
 
-      <div style={{ display: "flex", gap: 10, alignItems: "center" }}>
+      <div className="nav-auth" style={{ display: "flex", gap: 8, alignItems: "center", flexShrink: 0 }}>
         {user ? (
           <>
-            <Link to={dashPath} className="btn btn-ghost" style={{
+            <Link to={dashPath} className="btn btn-ghost hide-mobile" style={{
               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8,
             }}>
               <IconHome /> Kabinet
@@ -95,16 +116,101 @@ export default function Navbar() {
             <Link to="/profile" className="btn btn-accent" style={{
               textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 8,
             }}>
-              <IconUser /> {user.full_name.split(" ")[0]}
+              <IconUser /> <span className="hide-mobile">{user.full_name.split(" ")[0]}</span>
             </Link>
           </>
         ) : (
           <>
-            <Link to="/login" className="btn btn-ghost">Kirish</Link>
-            <Link to="/register" className="btn btn-accent">Ro'yxatdan o'tish</Link>
+            <Link to="/login" className="btn btn-ghost hide-mobile">Kirish</Link>
+            <Link to="/register" className="btn btn-accent">Ro'yxat</Link>
           </>
         )}
+
+        <button
+          className="nav-hamburger"
+          onClick={() => setOpen(!open)}
+          aria-label="Menu"
+          style={{
+            background: "rgba(255,255,255,0.6)",
+            border: "1px solid rgba(100,116,139,0.2)",
+            borderRadius: 10,
+            width: 40, height: 40,
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            color: "#475569",
+            flexShrink: 0,
+          }}
+        >
+          <IconMenu open={open} />
+        </button>
       </div>
+
+      {/* Mobile menu overlay */}
+      {open && (
+        <div
+          className="nav-center open"
+          style={{ display: "flex", gap: 6 }}
+          onClick={(e) => {
+            // faqat NavLink'lar bosilganda yopiladi, umumiy bo'sh joyda yopilmasin
+            if (e.target.tagName === "A") closeMenu();
+          }}
+        >
+          {navItems.map(item => (
+            <NavLink
+              key={item.to}
+              to={item.to}
+              end={item.to === "/"}
+              onClick={closeMenu}
+              style={({ isActive }) => ({
+                padding: "12px 18px",
+                borderRadius: 14,
+                fontSize: 14,
+                fontWeight: 600,
+                background: isActive ? "#fb923c" : "transparent",
+                color: isActive ? "#7c2d12" : "#334155",
+                textAlign: "left",
+              })}
+            >
+              {item.label}
+            </NavLink>
+          ))}
+          {user && (
+            <NavLink
+              to={dashPath}
+              onClick={closeMenu}
+              style={{
+                padding: "12px 18px",
+                borderRadius: 14,
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#475569",
+                borderTop: "1px solid rgba(0,0,0,0.05)",
+                marginTop: 6,
+              }}
+            >
+              🏠 Kabinet
+            </NavLink>
+          )}
+          {!user && (
+            <NavLink
+              to="/login"
+              onClick={closeMenu}
+              style={{
+                padding: "12px 18px",
+                borderRadius: 14,
+                fontSize: 14,
+                fontWeight: 600,
+                color: "#475569",
+                borderTop: "1px solid rgba(0,0,0,0.05)",
+                marginTop: 6,
+              }}
+            >
+              Kirish
+            </NavLink>
+          )}
+        </div>
+      )}
     </nav>
   );
 }

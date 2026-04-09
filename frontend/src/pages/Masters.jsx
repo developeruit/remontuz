@@ -53,7 +53,7 @@ export default function Masters() {
   const hasActiveFilters = minRating > 0 || cityFilter || specFilter || search;
 
   return (
-    <div className="container" style={{ padding: "48px 48px" }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)" }}>
       <h1 className="page-title">Ustalar katalogi</h1>
       <p className="page-sub">Professional mutaxassislar ro'yxati</p>
 

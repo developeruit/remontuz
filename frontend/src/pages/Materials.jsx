@@ -22,7 +22,7 @@ export default function Materials() {
   const filtered = cat ? items.filter(i => i.category === cat) : items;
 
   return (
-    <div className="container" style={{ padding: "48px 48px" }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)" }}>
       <h1 className="page-title">Materiallar bozori</h1>
       <p className="page-sub">Narxlar va yetkazib beruvchilar</p>
 

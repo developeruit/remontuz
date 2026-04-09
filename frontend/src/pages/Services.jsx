@@ -24,7 +24,7 @@ export default function Services() {
   }, []);
 
   return (
-    <div className="container" style={{ padding: "48px 48px" }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)" }}>
       <h1 className="page-title">Xizmatlar katalogi</h1>
       <p className="page-sub">Barcha ta'mirlash, dizayn va montaj ish turlari</p>
       <div className="grid-3" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 20 }}>

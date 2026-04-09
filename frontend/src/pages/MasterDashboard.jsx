@@ -129,7 +129,7 @@ export default function MasterDashboard() {
   };
 
   return (
-    <div className="container" style={{ padding: "40px 48px" }}>
+    <div className="container" style={{ padding: "32px clamp(16px, 3vw, 48px)" }}>
       <DashboardHeader user={user} subtitle="Usta kabineti — buyurtmalar va portfolio boshqaruvi" />
 
       {/* STATS */}

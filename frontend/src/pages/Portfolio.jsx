@@ -7,7 +7,7 @@ export default function Portfolio() {
   useEffect(() => { api.portfolio().then(setItems).catch(() => setItems([])); }, []);
 
   return (
-    <div className="container" style={{ padding: "48px 48px" }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)" }}>
       <h1 className="page-title">Loyihalar galereyasi</h1>
       <p className="page-sub">Bajarilgan ishlar namunalari</p>
       {items.length === 0 ? (

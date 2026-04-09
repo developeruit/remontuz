@@ -72,7 +72,7 @@ export default function AdminDashboard() {
     .reduce((s, o) => s + Number(o.final_price || o.estimated_price || 0), 0);
 
   return (
-    <div className="container" style={{ padding: "40px 48px" }}>
+    <div className="container" style={{ padding: "32px clamp(16px, 3vw, 48px)" }}>
       <DashboardHeader user={user} subtitle="Administrator paneli — to'liq tizim boshqaruvi" />
 
       {/* STATS */}

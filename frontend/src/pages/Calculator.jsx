@@ -97,7 +97,7 @@ export default function Calculator() {
   const fmt = (n) => n.toLocaleString("uz-UZ");
 
   return (
-    <div className="container" style={{ padding: "48px 48px", maxWidth: 960 }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)", maxWidth: 960 }}>
       <h1 className="page-title">Ta'mirlash kalkulyatori</h1>
       <p className="page-sub">Bir nechta savolga javob bering — taxminiy narxni oling</p>
 
@@ -121,7 +121,7 @@ export default function Calculator() {
             <>
               <h3 style={{ fontSize: 20, marginBottom: 6 }}>Qanday xizmat kerak?</h3>
               <p style={{ fontSize: 13, color: "#94a3b8", marginBottom: 20 }}>Ish turini tanlang</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 {SERVICES.map(s => (
                   <button key={s.id} onClick={() => set("service", s.id)} style={{
                     padding: "20px 18px", borderRadius: 14, border: "1px solid",
@@ -143,7 +143,7 @@ export default function Calculator() {
             <>
               <h3 style={{ fontSize: 20, marginBottom: 6 }}>Obyekt turi</h3>
               <p style={{ fontSize: 13, color: "#94a3b8", marginBottom: 20 }}>Qayerda ishlaymiz?</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+              <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                 {OBJECTS.map(o => (
                   <button key={o.id} onClick={() => set("object", o.id)} style={{
                     padding: "20px 18px", borderRadius: 14,
@@ -232,7 +232,7 @@ export default function Calculator() {
             <>
               <h3 style={{ fontSize: 20, marginBottom: 6 }}>Qo'shimcha ishlar</h3>
               <p style={{ fontSize: 13, color: "#94a3b8", marginBottom: 20 }}>Bir nechtasini tanlashingiz mumkin</p>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+              <div className="grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
                 {EXTRAS.map(e => {
                   const active = state.extras.includes(e.id);
                   return (

@@ -18,7 +18,7 @@ export default function MasterProfile() {
   if (!master) return <div className="container" style={{ padding: 48 }}>Yuklanmoqda...</div>;
 
   return (
-    <div className="container" style={{ padding: "48px 48px" }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)" }}>
       <GlassCard style={{ padding: 40, marginBottom: 24 }}>
         <div style={{ display: "flex", gap: 28, alignItems: "center", flexWrap: "wrap" }}>
           <div style={{

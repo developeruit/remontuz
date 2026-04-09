@@ -56,7 +56,7 @@ export default function Apply() {
   };
 
   return (
-    <div className="container" style={{ padding: "48px 48px", maxWidth: 760 }}>
+    <div className="container" style={{ padding: "40px clamp(16px, 3vw, 48px)", maxWidth: 760 }}>
       <h1 className="page-title">Ariza topshirish</h1>
       <p className="page-sub">Loyihangiz haqida batafsil ma'lumot bering</p>
 

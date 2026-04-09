@@ -67,7 +67,7 @@ export default function Profile() {
   if (!user) return null;
 
   return (
-    <div className="container" style={{ padding: "40px 48px", maxWidth: 900 }}>
+    <div className="container" style={{ padding: "32px clamp(16px, 3vw, 48px)", maxWidth: 900 }}>
       <DashboardHeader user={user} subtitle="Profil ma'lumotlarini tahrirlash" />
 
       {msg && (

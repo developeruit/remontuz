@@ -30,7 +30,8 @@ Loyiha diplom ishi doirasida, zamonaviy **Backend-as-a-Service** (Supabase) va *
 - **Ta'mirlash kalkulyatori** — 7 bosqichli interaktiv forma (xizmat, obyekt, maydon, sifat, qo'shimcha ishlar, muddat)
 - **Ariza topshirish** — rasm ilovalari bilan (maks 5 ta)
 - **Ustalar katalogi** — shahar, mutaxassislik, reyting bo'yicha filter
-- **Shaxsiy kabinet** — arizalar ro'yxati, statuslari, jami sarflangan summa
+- **🛒 Materiallar bozori** — onlayn savat, miqdor tanlash, checkout, yetkazish manzili
+- **Shaxsiy kabinet** — arizalar ro'yxati, statuslari, material buyurtmalar tarixi
 - **Sharh qoldirish** — tugallangan ishlar uchun 5 yulduzli baholash
 - **Real-time bildirishnomalar** — ariza statusi o'zgarganda toast
 
@@ -97,7 +98,8 @@ remontuz/
 │   │   ├── index.css             # Global stillar + responsive
 │   │   ├── context/
 │   │   │   ├── AuthContext.jsx   # Foydalanuvchi sessiyasi
-│   │   │   └── ToastContext.jsx  # Global toast bildirishnomalar
+│   │   │   ├── ToastContext.jsx  # Global toast bildirishnomalar
+│   │   │   └── CartContext.jsx   # Savat (localStorage)
 │   │   ├── components/
 │   │   │   ├── Navbar.jsx        # Navigatsiya (hamburger menu)
 │   │   │   ├── Footer.jsx        # Footer (shaharcha bilan)
@@ -112,7 +114,8 @@ remontuz/
 │   │       ├── Masters.jsx       # Ustalar ro'yxati (filter)
 │   │       ├── MasterProfile.jsx # Usta profili
 │   │       ├── Portfolio.jsx     # Portfolio galereya
-│   │       ├── Materials.jsx     # Materiallar bozori
+│   │       ├── Materials.jsx     # Materiallar bozori (savatga qo'shish)
+│   │       ├── Cart.jsx          # Savat + checkout
 │   │       ├── Calculator.jsx    # 7 bosqichli kalkulyator
 │   │       ├── Login.jsx         # Kirish
 │   │       ├── Register.jsx      # Ro'yxatdan o'tish
@@ -127,9 +130,10 @@ remontuz/
 │   ├── vite.config.js
 │   └── vercel.json               # SPA rewrites
 ├── supabase/
-│   ├── schema.sql                # 8 jadval + RLS + seed data
-│   ├── storage.sql               # Storage bucket policy'lari
-│   └── migration_attachments.sql # orders.attachments ustuni
+│   ├── schema.sql                     # 8 jadval + RLS + seed data
+│   ├── storage.sql                    # Storage bucket policy'lari
+│   ├── migration_attachments.sql      # orders.attachments ustuni
+│   └── migration_material_orders.sql  # material_orders jadvali
 └── README.md
 ```
 
@@ -137,17 +141,18 @@ remontuz/
 
 ## 🗄️ Ma'lumotlar bazasi
 
-**8 ta asosiy jadval:**
+**9 ta asosiy jadval:**
 
 | Jadval | Vazifasi |
 |---|---|
 | `profiles` | Foydalanuvchi profillari (auth.users bilan bog'langan) |
 | `master_profiles` | Usta qo'shimcha ma'lumotlari (bio, rating, tajriba) |
 | `services` | Xizmatlar katalogi (Ta'mirlash, Dizayn, Montaj, Qurilish) |
-| `orders` | Arizalar (status, narx, attachments) |
+| `orders` | Xizmat arizalari (status, narx, attachments) |
 | `portfolio_items` | Usta ishlari namunalari (oldin/keyin rasmlar) |
 | `reviews` | Mijoz sharhlari va baholari |
 | `materials` | Qurilish materiallari ro'yxati |
+| `material_orders` | Material savat buyurtmalari (jsonb items, status) |
 | `messages` | Chat xabarlari (ariza bo'yicha) |
 
 **Trigger:** yangi foydalanuvchi ro'yxatdan o'tganda `profiles` yozuvi avtomatik yaratiladi.
@@ -170,8 +175,9 @@ remontuz/
 2. `supabase/schema.sql` faylini nusxalab yopishtiring → **Run**
 3. `supabase/storage.sql` faylini ishga tushiring
 4. `supabase/migration_attachments.sql` faylini ishga tushiring
-5. **Storage** bo'limida `portfolio` nomli **Public bucket** yarating
-6. **Authentication → Providers → Email** da `Confirm email` ni **o'chiring** (test uchun)
+5. `supabase/migration_material_orders.sql` faylini ishga tushiring
+6. **Storage** bo'limida `portfolio` nomli **Public bucket** yarating
+7. **Authentication → Providers → Email** da `Confirm email` ni **o'chiring** (test uchun)
 
 ### 3-qadam: Frontend sozlash
 
@@ -237,7 +243,10 @@ Loyiha Vercel'da bepul deploy qilinadi:
 - ✅ Ariza holati o'zgarganda live update
 - ✅ Mijoz / Usta / Admin dashboardlari
 - ✅ Admin — foydalanuvchilar jadvali + tasdiqlash
-- ✅ Materiallar bozori (kategoriya filter)
+- ✅ Materiallar bozori (qidiruv, kategoriya filter)
+- ✅ 🛒 **Onlayn savat** (localStorage persistent)
+- ✅ 🛒 **Checkout oqimi** (manzil, telefon, buyurtma yuborish)
+- ✅ 🛒 **Material buyurtmalar tarixi** (mijoz kabinetda)
 - ✅ Glassmorphism dizayn (orange palette)
 - ✅ Responsive (desktop, tablet, mobile)
 - ✅ Hamburger navigation menu
